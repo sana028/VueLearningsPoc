@@ -7,5 +7,25 @@
     {
       "path": "./tsconfig.app.json"
     }
-  ]
+  ],
+  
+    "compilerOptions": {
+      "noEmit": true,
+      "module": "ESNext",
+      "moduleResolution": "node",
+      "noImplicitAny": false,
+      "allowJs": true,
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["./src/*"]
+      },
+    },
+    "include": ["src/**/*.d.ts", "src/**/*.vue", "src/**/*.js", "src/**/*.mjs", "apiconfig.mjs"],
+    "exclude": ["node_modules", "dist"]
+  
+  
 }

@@ -1,10 +1,7 @@
-body{
-    background-color: darkseagreen !important;
-}
+/* 
 
 #app{
     display: flex;
-    /* align-items: center; */
     flex-direction: column;
 }
 
@@ -13,6 +10,9 @@ body{
 .body-container{
     background: white;
     border-radius: 10px;
+    width: fit-content;
+    display: flex;
+    align-self: center;
 }
 
 .login-box{
@@ -71,4 +71,4 @@ h3{
     font-variant: all-petite-caps;
     font-size: 30px;
 }
-
+ */
