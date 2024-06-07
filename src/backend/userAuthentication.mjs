@@ -6,8 +6,7 @@ const SIGNUP = async (email, password) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential;
-        const res =await sendEmailVerification(userCredential.user);
-        console.log(res);
+        await sendEmailVerification(userCredential.user);
         return user;
     }
     catch (error) {

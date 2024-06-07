@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 
 import { initializeApp } from "firebase/app";
-import { getFirestore,initializeFirestore } from "firebase/firestore";
+import { getFirestore, initializeFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import 'firebase/firestore';
-import { persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
-import { onAuthStateChanged } from "firebase/auth";
+import {getDatabase} from 'firebase/database'
+
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -15,6 +15,7 @@ import { onAuthStateChanged } from "firebase/auth";
 const firebaseConfig = {
   apiKey: "AIzaSyCUnUPyolOilTY-j0L3IKn6LyaWQzZUqK8",
   authDomain: "fir-learnings-5cc16.firebaseapp.com",
+  databaseURL: "https://fir-learnings-5cc16-default-rtdb.firebaseio.com",
   projectId: "fir-learnings-5cc16",
   storageBucket: "fir-learnings-5cc16.appspot.com",
   messagingSenderId: "291226500849",
@@ -24,12 +25,11 @@ const firebaseConfig = {
 
 
 // Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
-const app=initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 // initializeFirestore(app,{localCache: persistentLocalCache(/*settings*/{tabManager: persistentMultipleTabManager()})})
-const db=getFirestore(app);
-const auth=getAuth(app);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const database=getDatabase(app);
 
 
-
-export {db,auth};
+export { db, auth, database};

@@ -1,4 +1,5 @@
 <template>
+  <v-app>
   <v-card>
     <v-layout>
       <v-app-bar
@@ -22,7 +23,7 @@
 
       <v-navigation-drawer
         v-model="drawer"
-        :location="$vuetify.display.mobile ? 'bottom' : undefined"
+        :location="$vuetify.display.mobile ? 'left' : undefined"
         temporary
       >
         <v-list
@@ -37,6 +38,7 @@
       </v-main>
     </v-layout>
   </v-card>
+</v-app>
 
 
 

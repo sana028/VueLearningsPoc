@@ -24,7 +24,7 @@
         "@/*": ["./src/*"]
       },
     },
-    "include": ["src/**/*.d.ts", "src/**/*.vue", "src/**/*.js", "src/**/*.mjs", "apiconfig.mjs"],
+    "include": ["src/**/*.d.ts", "src/**/*.vue", "src/**/*.js", "src/**/*.mjs", "apiconfig.mjs","env.d.ts"],
     "exclude": ["node_modules", "dist"]
   
   

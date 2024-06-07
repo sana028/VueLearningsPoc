@@ -11,22 +11,18 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
-import { onAuthStateChanged } from 'firebase/auth';
-import {auth} from './firebaseConfig.mjs';
-import { getAuth } from 'firebase/auth'
+import { auth } from './firebaseConfig.mjs';
+import { onAuthStateChanged } from "firebase/auth";
 
-onAuthStateChanged(getAuth(), (user) => {
+onAuthStateChanged(auth, (user) => {
   console.log(user);
-if (user) {
-console.log(user);
-if (user.emailVerified) {
-// User is signed in and email is verified
-// router.push('/home/search')
-} else {
-alert('Please verify your email to proceed.');
-}
-}
-})
+  if (user) {
+    console.log("User is signed in: ", user);
+    // You can store the user in your state management if needed
+  } else {
+    console.log('No user is signed in.');
+  }
+});
 
 const vuetify = createVuetify({
    components,

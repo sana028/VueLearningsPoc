@@ -8,6 +8,12 @@ const routes = [
         component: import(/*webpackChunkName:"login" */'../components/SignUp.vue')
     },
     {
+        path:'/signIn',
+        name: 'signIn',
+        component:import(/* webpackChunkName:"signIn" */'../singInWithLink/EmailLinkLogin.vue'),
+        props:true
+    },
+    {
         path:'/forgot-password',
         name: 'forgotPassword',
         component: import(/* webpackChunkName:"forgotPassword" */'../views/ForgotPassword.vue')
@@ -17,6 +23,12 @@ const routes = [
          name:'verifyEmail',
          component:import(/* webpackChunkName:"verifyEmail" */'../views/EmailVerification.vue'),
          props:true
+    },
+    {
+        path:'/verify-emailLink',
+        name:'verifyEmailLink',
+        component:import(/* webpackChunkName :"verifyEmailLink" */'../singInWithLink/VerifyEmailLink.vue'),
+        props:true
     },
     {
         path:'/home/',

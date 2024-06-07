@@ -17,7 +17,7 @@ export default defineConfig({
     vuetify({ autoImport : true}),
     babel() ,
     resolve({
-      extensions: ['.js', '.ts','*.mjs']
+      extensions: ['.js', '.ts','*.mjs','d.ts']
   })
   ],
   resolve: {
@@ -25,7 +25,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       
     },
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs'],
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs','d.ts'],
   },
   define: {
     __VALUE__: `"${process.env.VALUE}"` // wrapping in "" since it's a string

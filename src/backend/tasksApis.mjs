@@ -14,32 +14,25 @@ router.post('/signup', async (req, res) => {
 
   try {
     const userCredential = await SIGNUP(email, password);
-    const loginedUser = collection(db, SIGNUPUSER)
     const userData = {
       email,
       password,
       signedAt: new Date(),
       userId:userCredential.user.uid
     }
-    let data=null;
     const docRef=doc(db,SIGNUPUSER,userCredential.user.uid)
-    if(userCredential.user){
-      alert('your email is not verfied , check your mail')
-     data = setDoc(docRef,userData);
-     if (data) {
-      res.status(200).send({userCredential,userId:data.id})
-    }
-    }else{
-      alert('you don`t have an account , create new account');
+    if(userCredential.user.emailVerified){
+     await setDoc(docRef,userData);
+     res.status(200).send(userCredential)
     }
   } catch (error) {
+   
     res.status(500).status(error);
   }
 })
 
 router.post('/signIn', async (req, res) => {
   const { email, password } = req.body;
-  console.log(req,'re');
   try {
     const userCredential = await SIGNIN(email, password);
     const loginedUser =  collection(db, LOGINEDUSER)
@@ -50,26 +43,24 @@ router.post('/signIn', async (req, res) => {
       userId:userCredential.user.uid
     }
     const docRef=doc(db,LOGINEDUSER,userCredential.user.uid)
-    console.log(userCredential.user)
     if(userCredential.user.emailVerified){
-    await setDoc(docRef,userData);
+     await setDoc(docRef,userData);
+     res.status(200).send(userCredential)
     }
-    if(userCredential){
-      res.status(200).send(userCredential)
+    else{
+      res.status(200).send('your email is not verified');
     }
     
   } catch (error) {
+
     res.status(500).status(error);
   }
 });
 
 router.get('/getAllTasks', async(req, res) => {
   try{
-    console.log('hit');
   const docRef = doc(db, TASKDB, NEWTASKS);
-  console.log(docRef);
   const list = await getDoc(docRef);
-  console.log(list.data());
   const data = (list).data();
   res.status(200).send(data);
   }catch(error){
@@ -80,7 +71,6 @@ router.get('/getAllTasks', async(req, res) => {
 router.post('/addtask', async(req, res) => {
   const body = req.body;
   const {task} = body;
-  console.log(task);
   try{
     const docRef = doc(db,TASK_INFO_DB, task);
     await setDoc(docRef,body);
@@ -97,7 +87,6 @@ router.post('/addtask', async(req, res) => {
 
 router.get('/gettaskdetails/:task', async(req, res) => {
   const task = req.params.task;
-  console.log(task,req.params)
   try{ 
     const docRef = doc(db, TASK_INFO_DB, task);
     const list = getDoc(docRef);

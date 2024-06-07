@@ -2,6 +2,7 @@ import axios from "axios";
 import { sendPasswordResetEmail } from "firebase/auth";
 import {auth} from '../firebaseConfig.mjs';
 
+
 const url = import.meta.env.VITE_API_URL;
 const signUp =(user)=>{
     try{
@@ -9,21 +10,34 @@ const signUp =(user)=>{
             return res.data
         })
         return result;
-    }catch(Error){
-    console.error(Error);
+    }catch(error){
+        alert('You have an account already, try to login');
+    console.error(error,'signUp');
     }
 }
-const signIn=(user)=>{
+const signIn=async(user)=>{
+    let result;
     try{
-        const result=axios.post(url+'/signIn',user).then((res)=>{
-            return res.data
+       await axios.post(url+'/signIn',user).then((res)=>{
+            if (res.data === "your email is not verified") {
+                console.log('ver');
+                alert("Your email is not verified, verify your email.");
+                result= false; 
+            }
+           result= res.data; 
         })
-        console.log(result,'red')
-        return result;
+        .catch((error) => {
+            alert('You don’t have an account, create a new account.');
+            console.error(error);
+            result= false;
+        });
+      return result;
+
     }
     catch(error){
+        console.log('jjjj')
         alert('you don`t have an account , create new account');
-       return false;
+        console.error(error,'signIn');
     }
 }
 

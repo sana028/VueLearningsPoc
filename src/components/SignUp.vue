@@ -225,13 +225,15 @@ const login = async () => {
                 password: loginPassword.value
             }
             try {
-                console.log('signin');
                 const res = await signIn(userLoginInfo);
                 console.log(res);
+                if(res){
                 store.setUserId(res.id)
                 routers.push({path : '/home/search'})
+                }
             } catch (error) {
                 isCredentailsWrong.value = true;
+               
                 console.error(error);
             }
         }
@@ -250,13 +252,12 @@ const signup = async () => {
                 lastName: lastName.value
             }
             try {
-                
-                const {userCredential} = await signUp(userSignUpInfo);
-                console.log(userCredential);
+                const userCredential = await signUp(userSignUpInfo);
                 store.setUserId(userCredential.user.uid);
-                store.user=userCredential.user;
+                store.user=userCredential;
                 store.userEmail=signUpEmail.value;
-                routers.push({path:'/verify-email'});
+                step.value = step.value -1;
+                alert('now login with your credentials');
             } catch (error) {
                 console.error(error);
             }

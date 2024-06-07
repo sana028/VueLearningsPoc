@@ -8,7 +8,7 @@
                 once you are verfied login with your credentails
             </v-card-text>
             <v-card-actions class="card-actions">
-                <v-btn @click="resendVerificationEmail" style="background-color: #0daf0dd1;">Resend Verification Email</v-btn>
+                <!-- <v-btn @click="resendVerificationEmail" style="background-color: #0daf0dd1;">Resend Verification Email</v-btn> -->
                 <v-btn @click="verifyLogin" style="background-color: steelblue;">verify Email</v-btn>
             </v-card-actions>
         </v-card>
@@ -17,7 +17,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import {auth} from '../firebaseConfig.mjs';
-import { onAuthStateChanged, getAuth, sendEmailVerification } from 'firebase/auth';
+import { isSignInWithEmailLink ,signInWithEmailLink} from 'firebase/auth';
 import { useLoginStore } from '@/stores/loginStore';
 
 const router = useRouter();
@@ -25,27 +25,26 @@ const store = useLoginStore();
 const user=store.user;
 
 
-const resendVerificationEmail =async()=>{
-    console.log(user);
-    await sendEmailVerification({...user});
-    window.prompt('check your inbox for verfication email')
+// const resendVerificationEmail =()=>{
+//     auth.currentUser.sendEmailVerification();
+//     window.prompt('check your inbox for verfication email')
 
-}
+// }
 const verifyLogin=async()=>{
-
- onAuthStateChanged(auth, (user) => {
-        if (user) {
-          console.log("User in checkEmailVerification: ", user);
-          if (user.emailVerified) {
-            router.push('/');
-          } else {
-            alert('Please verify your email first');
-          }
-        } else {
-          alert('No user is signed in.');
+ 
+    const email = localStorage.getItem('email');
+      if (isSignInWithEmailLink(auth, window.location.href)) {
+        try {
+          await signInWithEmailLink(auth, email, window.location.href);
+          alert('Successfully signed in!');
+          store.userEmail=email;
+          localStorage.removeItem('email');
+          
+          router.push('/home/search'); // Redirect to the desired page
+        } catch (error) {
+          console.error('Error verifying email link:', error);
         }
-      });
-    
+      }
 
 }
 
