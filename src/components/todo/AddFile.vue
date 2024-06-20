@@ -48,7 +48,7 @@ const uploadTheMediaFile = async () => {
     try {
         const file = filePath.value;
         const task = taskFile.value;
-        if (!file) {
+        if (!file && !task) {
             console.log("No file selected");
             return;
         }
