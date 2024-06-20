@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-parsing-error -->
 <template>
     <v-container class="container">
         <v-card class="border-accent-colour border-t-4 mt-3 card-styles" elevation="0" light tag="section" v-if="checkEmail"
@@ -18,6 +19,7 @@
                     Reset Password
                 </v-btn>
             </v-card-actions>
+            <input></input>
            
         </v-card>
         <v-card>

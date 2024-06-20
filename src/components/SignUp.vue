@@ -228,7 +228,8 @@ const login = async () => {
                 const res = await signIn(userLoginInfo);
                 console.log(res);
                 if(res){
-                store.setUserId(res.id)
+                store.userId = res.user.uid;
+                store.userAuthenticated = res.user.emailVerified;
                 routers.push({path : '/home/search'})
                 }
             } catch (error) {
@@ -253,13 +254,15 @@ const signup = async () => {
             }
             try {
                 const userCredential = await signUp(userSignUpInfo);
+                console.log(userCredential)
                 store.setUserId(userCredential.user.uid);
                 store.user=userCredential;
                 store.userEmail=signUpEmail.value;
                 step.value = step.value -1;
                 alert('now login with your credentials');
             } catch (error) {
-                console.error(error);
+                console.error(error); 
+               
             }
         }
     }
@@ -289,3 +292,5 @@ const handleSnackbar = ()=>{
     border-bottom-left-radius: 40%;
 }
 </style>
+
+

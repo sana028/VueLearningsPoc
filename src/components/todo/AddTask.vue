@@ -2,7 +2,7 @@
 <template>
    <div class="pa-4 text-center">
     <v-dialog v-model="props.dialog" max-width="600">
-      <v-card prepend-icon="mdi-account" title="Task Info">
+      <v-card prepend-icon="mdi-account" :title="type">
         <v-card-text>
           <v-row >
             <v-col>
@@ -102,6 +102,8 @@ import ToasterPopup from '../popups/ToasterPopup.vue';
 const route = useRouter();
 const props = defineProps({
     dialog: Boolean,
+    taskType : String,
+    taskInfo:Array
 });
 const emit = defineEmits(['updateddialog']);
 const isstartDateMenu = ref(false);
@@ -115,14 +117,32 @@ const spentedHours = ref(0);
 const taskNotes = ref('');
 const endDate = ref();
 const isSuccess = ref(false);
+const type =ref('');
 
 const handleClose = () =>{
-    emit('updateddialog', false);
+    emit('updateddialog', false,isSuccess.value);
     route.go(-1);
 }
 
 onMounted(()=>{
-    console.log(props.dialog)
+    console.log(props.dialog,props.taskType,props.taskInfo)
+    if(props.taskType=='add'){
+      type.value = 'Add Task '
+    }else{
+      type.value = 'Edit Task'
+    }
+  if(props.taskInfo){
+    console.log(props.taskInfo[0])
+    const taskData=props.taskInfo[0];
+    taskName.value=taskData.taskName;
+    taskStatus.value=taskData.taskStatus;
+    developerName.value=taskData.developerName;
+    expectedHours.value=taskData.expectedHours;
+    spentedHours.value=taskData.spentedHours;
+    taskNotes.value=taskData.taskNotes;
+    startDate.value=taskData.startDate;
+    endDate.value=taskData.endDate;
+  }
 })
 
 const handleSave =async()=>{

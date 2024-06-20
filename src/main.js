@@ -13,13 +13,21 @@ import * as directives from 'vuetify/directives';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
 import { auth } from './firebaseConfig.mjs';
 import { onAuthStateChanged } from "firebase/auth";
+import { useLoginStore } from './stores/loginStore'
 
 onAuthStateChanged(auth, (user) => {
   console.log(user);
+  const store=useLoginStore();
   if (user) {
+    store.userEmail=user.email;
+    store.userId =  user.uid;
+    console.log(store.userId);
+    store.userAuthenticated=user.emailVerified;
     console.log("User is signed in: ", user);
     // You can store the user in your state management if needed
   } else {
+    store.userEmail='';
+    store.userAuthenticated=false;
     console.log('No user is signed in.');
   }
 });

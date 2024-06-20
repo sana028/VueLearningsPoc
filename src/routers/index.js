@@ -1,4 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
+import { useLoginStore } from "@/stores/loginStore";
+
+
 
 const routes = [
     //lazy loading routes,
@@ -42,14 +45,30 @@ const routes = [
                 props: true,
                 children:[
                     {
-                        path:'add',
+                        path:'todo',
                         name:'AddTask',
                         component: import(/* webpackChunkName: "AddTask" */'../components/todo/AddTask.vue'),
                         props:true
+                    },{
+                        path:'delete',
+                        name:'DeleteTask',
+                        component:import(/* webpackChunkName : "DeleteTask" */'../components/todo/DeleteTask.vue'),
+                        props:true
+                    },
+                    {
+                        path:'upload',
+                        name:'uploadFile',
+                        component:import(/* webpackChunkName : "uploadFile" */'../components/todo/AddFile.vue'),
+                        props:true
+                    },
+                    {
+                        path:'download',
+                        name:'downloadFile',
+                        component:import(/* webpackChunkName : "downloadFile */'../components/popups/DownloadFile.vue'),
+                        props:true
                     }
                 ]
-            },
-           
+            },  
         ]
     }
 ]
@@ -59,13 +78,15 @@ const routers = createRouter({
     routes
 });
 
-// routers.beforeEach((to, from, next) => {
-//     if (to.name === 'login' && to.name) {
-//         next();
-//     } else {
-//         return '';
-//     }
-// })
+routers.beforeEach((to, from, next) => {
+    const store=useLoginStore();
+    const isAuthenticated = store.userAuthenticated
+    if (to.name === 'login' || isAuthenticated ) {
+        next();
+    } else {
+        next('/');
+    }
+})
 
 export default routers;
 

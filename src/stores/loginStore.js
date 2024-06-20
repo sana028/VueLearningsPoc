@@ -5,10 +5,10 @@ export const useLoginStore = defineStore({
     id:'loginStore',
     state :(()=>{
         return{
-           userId:'' ,
+           userId:useSessionStorage('userId',''),
            userName: useSessionStorage('userName',''),
            userEmail : useSessionStorage('userEmail',''),
-           user:null
+           userAuthenticated:useSessionStorage('userAuthenticated',false),
         }
     }),
     getters:{

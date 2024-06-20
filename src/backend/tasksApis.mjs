@@ -22,12 +22,14 @@ router.post('/signup', async (req, res) => {
     }
     const docRef=doc(db,SIGNUPUSER,userCredential.user.uid)
     if(userCredential.user.emailVerified){
-     await setDoc(docRef,userData);
+     await addDoc(db,SIGNUPUSER,userData);
      res.status(200).send(userCredential)
     }
+    else{
+      res.status(500).send('verify your email');
+    }
   } catch (error) {
-   
-    res.status(500).status(error);
+    res.status(500).send(error);
   }
 })
 

@@ -7,35 +7,29 @@
         v-model:search="search" :items=filteredTasks @keydown.enter="handleSubmit" @change="handleClick">
       </v-autocomplete>
     </v-row>
+    <v-row class="btn-add">
+      <RouterLink :to="{ name: 'downloadFile' }"><v-btn color="secondary" size="large" type="button" variant="elevated"
+              prepend-icon="mdi-download" @click="handleAdd">Downloads</v-btn></RouterLink>
+      <RouterLink :to="{ name: 'AddTask' }"><v-btn color="primary" size="large" type="button" variant="elevated"
+              prepend-icon="mdi-plus" @click="handleAdd">Add</v-btn></RouterLink>
+     
+    </v-row>
     <v-row>
       <div class="taskItem">
-        <v-card-actions style="justify-content: flex-end;">
-          <RouterLink :to="{ name: 'AddTask' }"><v-btn color="primary" size="large" type="submit" variant="elevated"
-              prepend-icon="mdi-plus" @click="handleAdd">Add</v-btn></RouterLink>
-        </v-card-actions>
-        <v-card v-if="taskDetails" class="card">
-          <v-card-title class="card-title">{{ taskName  }}</v-card-title>
-          <v-card-item v-for="(value, key) of taskDetails" :key="key" class="card-item">
-            
-            <v-row>
-              <v-col cols="12" sm="4">{{ key }} </v-col>
-              <v-col cols="12" sm="2">:</v-col>
-              <v-col cols="12" sm="4">{{ value }}</v-col>
-            </v-row>
-          </v-card-item>
-          <v-card-actions style="justify-content: center;">
-            <v-btn class="edit-btn" @click="handleEdit">Edit</v-btn>
-          </v-card-actions>
-        </v-card>
+       <TaskView :data="taskDetails" v-if="taskDetails?.taskName == search"/>
       </div>
     </v-row>
   </v-col>
-  <RouterView :dialog="dialog" @updateddialog="handleDialog"></RouterView>
+  <RouterView :dialog="dialog" @updateddialog="handleDialog" :taskType="'add'"></RouterView>
 </template>
 <script setup lang="ts">
 import { onMounted, ref, watch, computed } from 'vue';
-import { GETALLTASKS, GETTASKDETAILS } from '@/backend/actions.mjs';
+import { GETTASKDETAILS } from '@/backend/actions.mjs';
 import { useRouter } from 'vue-router';
+import TaskView from '@/components/TaskView.vue';
+import { collection, onSnapshot,doc, } from 'firebase/firestore';
+import { db } from '@/firebaseConfig.mjs';
+import { NEWTASKS, TASKDB } from '@/helpers/DB/constant.mjs';
 
 const router = useRouter();
 const search = ref<string>('');
@@ -45,8 +39,17 @@ const dialog = ref(false);
 const taskName = ref();
 
 onMounted(async () => {
-  const data = await GETALLTASKS();
-  allTasks.value = data.tasks;
+  const tasksRef = doc(db, TASKDB, NEWTASKS);
+    onSnapshot(tasksRef, (snapshot) => {
+      const data = snapshot.data();
+      if (data) {
+        allTasks.value = data.tasks || [];
+      } else {
+        console.log('Document does not exist');
+      }
+    }, (error) => {
+      console.error('Error fetching document:', error);
+    });
 })
 watch([search],()=>{
    console.log(search);
@@ -72,27 +75,23 @@ const handleSubmit = () => {
 const getTaskDetails = async () => {
   const result = await GETTASKDETAILS(search.value);
   console.log(result)
-  console.log(result.taskName);
+  // console.log(result.taskName);
   if (result) {
     taskDetails.value = result;
     taskName.value=result.taskName
   }
 }
 
-const handleEdit = () => {
-  // const url = router.resolve({
-  //   name: 'task',
-  //   params: { task: search.value }
-  // }).href;
-
-  // window.open(url, '_blanck');
-}
 
 const handleAdd = () =>{
    dialog.value=true;
 }
 
-const handleDialog = () =>{
+const handleDialog = (isSuccess) =>{
+  if(isSuccess){
+    const query=collection(db,TASKDB);
+    onSnapshot
+  }
   dialog.value=false;
 }
 
@@ -215,5 +214,10 @@ header {
 
 .card-item {
   padding: 0.625rem 4rem;
+}
+.btn-add{
+  display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
 }
 </style>

@@ -1,44 +1,42 @@
 <template>
   <v-app>
-  <v-card>
-    <v-layout>
-      <v-app-bar
-        color="primary"
-        prominent
-      >
-        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-card style="box-shadow: none">
+      <v-layout>
+        <v-app-bar color="primary" prominent>
+          <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-        <v-toolbar-title>My files</v-toolbar-title>
+          <v-toolbar-title>My files</v-toolbar-title>
 
-        <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn icon="mdi-account" v-bind="props" size="large">
 
-        <template v-if="$vuetify.display.mdAndUp">
-          <v-btn icon="mdi-magnify" variant="text"></v-btn>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item v-for="(item, index) in items" :key="index" :value="index">
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <v-icon icon="mdi-logout" @click="handleLogout"></v-icon>
 
-          <v-btn icon="mdi-filter" variant="text"></v-btn>
-        </template>
+          <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
+        </v-app-bar>
 
-        <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
-      </v-app-bar>
+        <v-navigation-drawer v-model="drawer" :location="$vuetify.display.mobile ? 'left' : undefined" temporary>
+          <v-list :items="items"></v-list>
+        </v-navigation-drawer>
 
-      <v-navigation-drawer
-        v-model="drawer"
-        :location="$vuetify.display.mobile ? 'left' : undefined"
-        temporary
-      >
-        <v-list
-          :items="items"
-        ></v-list>
-      </v-navigation-drawer>
-
-      <v-main >
-        <v-card-text>
+        <v-main>
+          <v-container>
             <router-view></router-view>
-        </v-card-text>
-      </v-main>
-    </v-layout>
-  </v-card>
-</v-app>
+          </v-container>
+        </v-main>
+      </v-layout>
+    </v-card>
+  </v-app>
 
 
 
@@ -47,37 +45,45 @@
 
 <script setup>
 import { ref } from 'vue';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/firebaseConfig.mjs';
+import { useRouter } from 'vue-router';
 
-
+const router = useRouter();
 const drawer = ref(false);
-const group = ref(null);
-const items = ref( [
-        {
-          title: 'Foo',
-          value: 'foo',
-        },
-        {
-          title: 'Bar',
-          value: 'bar',
-        },
-        {
-          title: 'Fizz',
-          value: 'fizz',
-        },
-        {
-          title: 'Buzz',
-          value: 'buzz',
-        },]);
-const appTitle = 'Awesome App';
-// const sidebar = ref<boolean>(false);
-const menuItems = [
-    { title: 'Home', path: '/home', icon: 'home' },
-    { title: 'Sign Out', path: '/', icon: 'face' },
-]
+const items = ref([
+  {
+    title: 'Foo',
+    value: 'foo',
+  },
+  {
+    title: 'Bar',
+    value: 'bar',
+  },
+  {
+    title: 'Fizz',
+    value: 'fizz',
+  },
+  {
+    title: 'Buzz',
+    value: 'buzz',
+  },]);
 
+const handleLogout = async () => {
+  try {
+    await signOut(auth);
+    router.push({name:'login'}); 
+  } catch (error) {
+    console.error('Error signing out:', error);
+  }
+};
+
+const showProfile = () => {
+
+}
 </script>
 <style scoped>
-.nav-bar-style{
-    margin-bottom: 40px;
+.nav-bar-style {
+  margin-bottom: 40px;
 }
 </style>
