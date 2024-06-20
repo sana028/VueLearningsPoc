@@ -7,7 +7,10 @@
                 <v-list>
               <v-list-item v-for="(item, index) in items" :key="index" :value="index">
                 <v-list-item-title>{{ item.name }}</v-list-item-title>
-              <v-list-item><v-btn color="primary" variant="elevated" prepend-icon="mdi-download" @click="handleDownload(item)">Download</v-btn></v-list-item>
+              <v-card-actions>
+                <v-btn color="primary" variant="elevated" prepend-icon="mdi-download" @click="handleDownload(item)">Download</v-btn>
+                <v-btn color="error" variant="outlined" prepend-icon="mdi-delete" @click="handleDelete(item)">Delete</v-btn>
+              </v-card-actions>
               </v-list-item>
             </v-list>
             </v-card-text>
@@ -26,7 +29,7 @@ import { DOWNLOAD,DOWNLOADSDOC } from '@/helpers/DB/constant.mjs';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { useRouter } from 'vue-router';
 import { useSearchStore } from '@/stores/userData';
-
+import { useLoginStore } from '@/stores/loginStore';
 
 const props = defineProps({
     dialog: Boolean,
@@ -35,6 +38,7 @@ const emit = defineEmits(['updateddialog']);
 const items = ref();
 const router = useRouter();
 const store = useSearchStore();
+const userDataStore = useLoginStore();
 onMounted(()=>{
     const tasksRef = doc(db, DOWNLOAD, DOWNLOADSDOC);
     onSnapshot(tasksRef, (snapshot) => {
@@ -50,13 +54,21 @@ onMounted(()=>{
 })
 
 const handleDownload = (file) =>{
-   store.downloadTheFile(file);
+  const fileName = `images/${userDataStore.userId}/${file.name}`
+   store.downloadTheFile(fileName);
    
 }
 
 const handleClose = ()=>{
     emit('updateddialog', false);
     router.go(-1);
+}
+
+const handleDelete = (file) =>{
+  const fileName = `images/${userDataStore.userId}/${file.name}`
+  store.deleteTheFile(fileName,file);
+  emit('updateddialog', false);
+  router.go(-1);
 }
 </script>
 <style scoped>

@@ -1,6 +1,6 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue","src/**/*.mjs", "apiconfig.mjs"],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue","src/**/*.mjs", "apiconfig.mjs", "setCors.mjs"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "composite": true,
