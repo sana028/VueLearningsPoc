@@ -48,7 +48,7 @@ watch([emailAddress], () => {
 
 const signIn = async () => {
   const actionCodeOptions = {
-    url: import.meta.env.VITE_WEBSITE_PATH + '/verify-emailLink',
+    url:  'http://localhost:5173/verify-emailLink',
     handleCodeInApp: true,
   }
   v$.value.$touch();

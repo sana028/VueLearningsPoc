@@ -94,7 +94,8 @@ const uploadTheMediaFile = async () => {
             }
         );
     } catch (error) {
-        console.error("Unexpected error:", error); // Catch any unexpected errors
+        alert('You have entered wrong type of files first field only accept images ,and  second fields only documents')
+        console.error("Unexpected error:", error);
     }
 }
 

@@ -16,7 +16,7 @@
     </v-row>
     <v-row>
       <div class="taskItem">
-       <TaskView :data="taskDetails" v-if="taskDetails?.taskName == search"/>
+       <TaskView :data="taskDetails" v-if="taskDetails?.taskName == search" :vuedialog="dialog"/>
       </div>
     </v-row>
   </v-col>
@@ -44,6 +44,7 @@ onMounted(async () => {
       const data = snapshot.data();
       if (data) {
         allTasks.value = data.tasks || [];
+        console.log('hitt')
       } else {
         console.log('Document does not exist');
       }
@@ -90,7 +91,7 @@ const handleAdd = () =>{
 const handleDialog = (isSuccess) =>{
   if(isSuccess){
     const query=collection(db,TASKDB);
-    onSnapshot
+   
   }
   dialog.value=false;
 }

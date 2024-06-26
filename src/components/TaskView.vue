@@ -30,7 +30,7 @@ import { TASK_INFO_DB } from '@/helpers/DB/constant.mjs';
 
 
 const dialog = ref(false);
-const props = defineProps(['data']);
+const props = defineProps(['data','vuedialog']);
 const totalItems = ref(0);
 
 const headers = [
@@ -42,20 +42,42 @@ const headers = [
   { title: 'Spent Hours', key: 'spentedHours' },
   { title: 'Actions', key: 'actions', sortable: false },
 ]
-const handleDialog = (isClosed) => {
-  dialog.value = isClosed;
-}
+
 const serverItems = ref([]);
 
-watch([serverItems], () => {
-  console.log(serverItems.value);
-})
+const fetchTaskData = (task) => {
+  const tasksRef = query(collection(db, TASK_INFO_DB), where("taskName", "==", task));
+  onSnapshot(tasksRef, (snapshot) => {
+    serverItems.value = []; // Clear serverItems before pushing new data
+    snapshot.forEach(doc => {
+      serverItems.value.push(doc.data());
+      console.log(doc.data(), 'doc');
+    });
+  }, (error) => {
+    console.error('Error fetching document:', error);
+  });
+};
+
+const handleDialog = (isClosed) => {
+  fetchTaskData(props.data.taskName);
+  dialog.value = isClosed;
+};
+
+watch([dialog], () => {
+  fetchTaskData(props.data.taskName);
+});
+
+
+onMounted(() => {
+  fetchTaskData(props.data.taskName);
+});
 
 
 const getColor = (value) => {
   if (value == "In-progress") return 'blue';
   else if (value == "Done") return 'green';
   else if (value == "Block") return 'red';
+  else if (value == "hold") return 'yellow';
   else return;
 }
 
@@ -72,18 +94,6 @@ const uploadFile = ()=>{
   dialog.value=true;
 }
 
-onMounted(() => {
-  const task = props.data.taskName;
-  const tasksRef = query(collection(db,TASK_INFO_DB),where("taskName", "==", task));
-  onSnapshot(tasksRef, (snapshot) => {
-    snapshot.forEach(doc => {
-      serverItems.value=[]
-    serverItems.value.push(doc.data());
-  });
-  }, (error) => {
-    console.error('Error fetching document:', error);
-  });
-})
 </script>
 <style scoped>
 .custom-data-table {

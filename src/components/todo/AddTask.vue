@@ -163,7 +163,9 @@ const handleSave =async()=>{
     const updateDocRef = doc(db, TASKDB, NEWTASKS);
     await updateDoc(updateDocRef,{tasks: arrayUnion(taskName.value)});
     if(updateDocRef){
+      console.log('changed');
       isSuccess.value = true;
+      console.log('lll');
       route.go(-1);
     }
     

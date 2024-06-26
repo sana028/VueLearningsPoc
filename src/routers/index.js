@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import { createWebHistory, createRouter } from "vue-router";
 import { useLoginStore } from "@/stores/loginStore";
 
@@ -81,10 +82,16 @@ const routers = createRouter({
 routers.beforeEach((to, from, next) => {
     const store=useLoginStore();
     const isAuthenticated = store.userAuthenticated
-    if (to.name === 'login' || isAuthenticated ) {
+    if ((to.name === 'login' || isAuthenticated ) || (to.name === 'signIn')) {
         next();
     } else {
         next('/');
+    }
+
+    if(to.name === 'signIn'){
+        next();
+    }else{
+        next('/signIn');
     }
 })
 
