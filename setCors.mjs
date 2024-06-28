@@ -1,4 +1,4 @@
-import { initializeApp, cert } from 'firebase-admin/app';
+import { initializeApp } from 'firebase-admin/app';
 import { Storage } from '@google-cloud/storage';
 // import * as serviceAccount from './serviceAccount.json' assert { type: 'json' };
 
