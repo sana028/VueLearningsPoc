@@ -226,12 +226,12 @@ const login = async () => {
             }
             try {
                 const res = await signIn(userLoginInfo);
-                console.log(res);
-                if(res){
+              
+                // if(res){
                 store.userId = res.user.uid;
                 store.userAuthenticated = res.user.emailVerified;
                 routers.push({path : '/home/search'})
-                }
+                // }
             } catch (error) {
                 isCredentailsWrong.value = true;
                
@@ -253,8 +253,9 @@ const signup = async () => {
                 lastName: lastName.value
             }
             try {
+              
                 const userCredential = await signUp(userSignUpInfo);
-                console.log(userCredential)
+               
                 store.setUserId(userCredential.user.uid);
                 store.user=userCredential;
                 store.userEmail=signUpEmail.value;

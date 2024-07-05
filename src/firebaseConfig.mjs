@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, initializeFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getFirestore, initializeFirestore , connectFirestoreEmulator} from "firebase/firestore";
+import { getAuth,connectAuthEmulator } from "firebase/auth";
 import 'firebase/firestore';
-import { getDatabase } from 'firebase/database';
-import { getStorage } from 'firebase/storage';
+import { getDatabase,connectDatabaseEmulator } from 'firebase/database';
+import { getStorage,connectStorageEmulator } from 'firebase/storage';
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -30,6 +30,8 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const database=getDatabase(app);
 const storage=getStorage();
+// connectFirestoreEmulator(db, "http://127.0.0.1:8989");
+// connectAuthEmulator(auth,"http://127.0.0.1:9099");
 
 
 export { db, auth, database, storage};

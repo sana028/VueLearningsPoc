@@ -125,14 +125,14 @@ const handleClose = () =>{
 }
 
 onMounted(()=>{
-    console.log(props.dialog,props.taskType,props.taskInfo)
+
     if(props.taskType=='add'){
       type.value = 'Add Task '
     }else{
       type.value = 'Edit Task'
     }
   if(props.taskInfo){
-    console.log(props.taskInfo[0])
+
     const taskData=props.taskInfo[0];
     taskName.value=taskData.taskName;
     taskStatus.value=taskData.taskStatus;
@@ -158,14 +158,12 @@ const handleSave =async()=>{
     }
     
     const docRef = doc(db,TASK_INFO_DB, taskName.value);
-    console.log(startDate.value)
+
     await setDoc(docRef,{...taskInfo});
     const updateDocRef = doc(db, TASKDB, NEWTASKS);
     await updateDoc(updateDocRef,{tasks: arrayUnion(taskName.value)});
     if(updateDocRef){
-      console.log('changed');
       isSuccess.value = true;
-      console.log('lll');
       route.go(-1);
     }
     

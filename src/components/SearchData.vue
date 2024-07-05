@@ -2,10 +2,21 @@
 <template>
   <v-col>
     <v-row>
-      <v-autocomplete class="mx-auto" density="comfortable" menu-icon="" placeholder="Search your task name"
-        prepend-inner-icon="mdi-magnify" style="max-width: 350px;" theme="light" variant="solo" auto-select-first
+      <v-autocomplete class="mx-auto" menu-icon="" density="comfortable"  placeholder="Search your task name"
+        style="max-width: 350px;" theme="light" variant="solo" auto-select-first
         v-model:search="search" :items=filteredTasks @keydown.enter="handleSubmit" @change="handleClick">
+        <template v-slot:append>
+          <v-slide-x-reverse-transition mode="out-in">
+            <v-icon
+              :icon="'mdi-magnify'"
+              @click="handleSubmit"
+              size = "large"
+              
+            ></v-icon>
+          </v-slide-x-reverse-transition>
+        </template>
       </v-autocomplete>
+      
     </v-row>
     <v-row class="btn-add">
       <RouterLink :to="{ name: 'downloadFile' }"><v-btn color="secondary" size="large" type="button" variant="elevated"
@@ -23,11 +34,11 @@
   <RouterView :dialog="dialog" @updateddialog="handleDialog" :taskType="'add'"></RouterView>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, watch, computed } from 'vue';
+import { onMounted, ref, watch, computed, onUnmounted } from 'vue';
 import { GETTASKDETAILS } from '@/backend/actions.mjs';
 import { useRouter } from 'vue-router';
 import TaskView from '@/components/TaskView.vue';
-import { collection, onSnapshot,doc, } from 'firebase/firestore';
+import { collection, onSnapshot,doc, query, orderBy, limit, getDocs, } from 'firebase/firestore';
 import { db } from '@/firebaseConfig.mjs';
 import { NEWTASKS, TASKDB } from '@/helpers/DB/constant.mjs';
 
@@ -37,26 +48,31 @@ const allTasks = ref<Array<string>>([]);
 const taskDetails = ref();
 const dialog = ref(false);
 const taskName = ref();
+const unSubscribe = ref();
 
 onMounted(async () => {
-  const tasksRef = doc(db, TASKDB, NEWTASKS);
-    onSnapshot(tasksRef, (snapshot) => {
-      const data = snapshot.data();
-      if (data) {
-        allTasks.value = data.tasks || [];
-        console.log('hitt')
-      } else {
-        console.log('Document does not exist');
-      }
-    }, (error) => {
-      console.error('Error fetching document:', error);
+  fetchTheTaskINAORDERWITHLIMIT();
+});
+
+const fetchTheTaskINAORDERWITHLIMIT = async() =>{
+  const tasksRef = collection(db, TASKDB);
+  const taskRef = query(tasksRef, orderBy('tasks', 'asc'), limit(10));
+  const ref = (await getDocs(taskRef));
+  ref.forEach((doc) => {
+    console.log(doc.data());
+    allTasks.value = doc.data().tasks;
     });
-})
-watch([search],()=>{
-   console.log(search);
-})
-const filteredTasks = computed<string[]>(() => {
   console.log(allTasks.value)
+   
+}
+watch([search],()=>{
+  console.log(search.value);
+  fetchTheTaskINAORDERWITHLIMIT();
+})
+
+
+const filteredTasks = computed<string[]>(() => {
+
   if (search.value.length < 3) {
     return [];
   }
@@ -69,14 +85,14 @@ const handleClick = () => {
   getTaskDetails();
 }
 const handleSubmit = () => {
-  console.log('submitted');
+
   getTaskDetails();
 }
 
 const getTaskDetails = async () => {
   const result = await GETTASKDETAILS(search.value);
-  console.log(result)
-  // console.log(result.taskName);
+  const matchingWords = allTasks.value.filter(word => word.startsWith(search.value));
+  
   if (result) {
     taskDetails.value = result;
     taskName.value=result.taskName

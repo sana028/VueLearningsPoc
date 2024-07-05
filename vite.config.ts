@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 import babel from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-babel'
 
-// dotenv.config();
+dotenv.config();
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -27,7 +27,7 @@ export default defineConfig({
     },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs','d.ts'],
   },
-  // define: {
-  //   __VALUE__: `"${process.env.VALUE}"` // wrapping in "" since it's a string
-  // },
+  define: {
+    __VALUE__: `"${process.env.VALUE}"` // wrapping in console.log since it's a string
+  },
 })

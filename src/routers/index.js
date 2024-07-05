@@ -68,8 +68,14 @@ const routes = [
                         component:import(/* webpackChunkName : "downloadFile */'../components/popups/DownloadFile.vue'),
                         props:true
                     }
-                ]
+                ],
             },  
+            {
+                path:'Name',
+                name:'developerName',
+                component:import(/* webpackChunkName : "developerName" */'../components/SearchName.vue'),
+                props:true
+            }
         ]
     }
 ]

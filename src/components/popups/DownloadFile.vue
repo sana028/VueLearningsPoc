@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
     <v-dialog v-model="props.dialog">
-        <v-card>
-            <v-card-title>Download Files</v-card-title>
-            <v-card-text>
+        <v-card v-if="items?.length > 0 ">
+          <v-card-title>Download Files</v-card-title>
+            <v-card-text >
                 <v-list>
               <v-list-item v-for="(item, index) in items" :key="index" :value="index">
                 <v-list-item-title>{{ item.name }}</v-list-item-title>
@@ -18,40 +18,44 @@
                 <v-btn color="teal" variant="outlined" @click="handleClose">Close</v-btn>
                 </v-card-actions>
         </v-card>
-
+        <v-card v-else-if="items?.length == 0">
+        <v-card-text >
+              <v-alert type="error">No files to download</v-alert>
+            </v-card-text>
+          </v-card>
     </v-dialog>
 </template>
 <script setup>
 
 import { defineProps,defineEmits,ref, onMounted } from 'vue';
-import { db } from '@/firebaseConfig.mjs';
-import { DOWNLOAD,DOWNLOADSDOC } from '@/helpers/DB/constant.mjs';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { db, storage } from '@/firebaseConfig.mjs';
 import { useRouter } from 'vue-router';
 import { useSearchStore } from '@/stores/userData';
 import { useLoginStore } from '@/stores/loginStore';
+import { ref as storageRef, listAll, list } from 'firebase/storage';
 
 const props = defineProps({
     dialog: Boolean,
 })
+
 const emit = defineEmits(['updateddialog']);
 const items = ref();
 const router = useRouter();
 const store = useSearchStore();
 const userDataStore = useLoginStore();
 onMounted(()=>{
-    const tasksRef = doc(db, DOWNLOAD, DOWNLOADSDOC);
-    onSnapshot(tasksRef, (snapshot) => {
-      const data = snapshot.data();
-      if (data) {
-        items.value = data.files ;
-      } else {
-        console.log('Document does not exist');
-      }
-    }, (error) => {
-      console.error('Error fetching document:', error);
-    });
+   getAllfiles();
 })
+
+const getAllfiles = async () =>{
+    const startsRef = storageRef(storage,`images/${userDataStore.userId}`)
+   await listAll(startsRef).then((res)=>{
+     items.value = res.items;
+   }).catch((error=>{
+    alert(error);
+   }))
+
+}
 
 const handleDownload = (file) =>{
   const fileName = `images/${userDataStore.userId}/${file.name}`

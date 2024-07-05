@@ -3,7 +3,7 @@ import axios from "axios";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from '../firebaseConfig.mjs';
 import { SIGNUP, SIGNIN } from "./userAuthentication.mjs";
-import { doc, getDoc, setDoc, addDoc, collection, updateDoc, arrayUnion, getDocs,deleteDoc, arrayRemove } from "firebase/firestore";
+import { doc, getDoc, setDoc, addDoc, collection, updateDoc, arrayUnion, getDocs,deleteDoc, arrayRemove, query, where, orderBy, limit } from "firebase/firestore";
 import { db ,storage} from "../firebaseConfig.mjs";
 import { SIGNUPUSER, LOGINEDUSER, TASKDB, TASK_INFO_DB, NEWTASKS } from "@/helpers/DB/constant.mjs";
 import { onSnapshot } from "firebase/firestore";
@@ -38,17 +38,18 @@ const signIn = async (user) => {
             userId: userCredential.user.uid
         }
         const docRef = doc(db, LOGINEDUSER, userCredential.user.uid)
-        if (userCredential.user.emailVerified) {
-            await setDoc(docRef, userData);
-            return userCredential;
-        }
-        else {
-            alert('your email is not verified, verify your email');
-            return false;
-        }
+        // if (userCredential.user.emailVerified) {
+        //     await setDoc(docRef, userData);
+        //     return userCredential;
+        // }
+        // else {
+        //     alert('your email is not verified, verify your email');
+        //     return false;
+        // }
+        return userCredential;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -56,7 +57,6 @@ const GETALLTASKS = async () => {
     try {
         const docRef = collection(db, TASKDB);
         const list = await getDocs(docRef);
-        console.log(list.docs[0].data());
         const data = list.docs[0].data()
         return data;
     } catch (error) {
@@ -81,7 +81,6 @@ const ADDTASK = async (req) => {
 }
 
 const GETTASKDETAILS = async (task) => {
-
     try {
         const docRef = doc(db, TASK_INFO_DB, task);
         const list = getDoc(docRef);
@@ -91,6 +90,25 @@ const GETTASKDETAILS = async (task) => {
         console.error(error);
     }
 }
+
+const getDeveloperWorkedTasks = async(name) =>{
+    const coll = collection(db,TASK_INFO_DB);
+    const que = query(coll,where("developerName", "==", name),orderBy("taskStatus","asc"),limit(10));
+    let data=[];
+    try {
+        console.log(name,que)
+        const ref = await getDocs(que);
+        console.log(ref)
+        ref.docs.forEach((doc) => {
+            data.push(doc.data());
+            console.log(doc.data());
+        });
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error getting documents: ", error);
+    }
+} 
 
 const sendPasswordReset = async (email) => {
 
@@ -125,4 +143,4 @@ const deleteTask = async(taskName) => {
 
 
 
-export { signIn, signUp, GETALLTASKS, ADDTASK, GETTASKDETAILS, sendPasswordReset, updateTaskDetails, deleteTask };
+export { signIn, signUp, GETALLTASKS, ADDTASK, GETTASKDETAILS, sendPasswordReset, updateTaskDetails, deleteTask, getDeveloperWorkedTasks };

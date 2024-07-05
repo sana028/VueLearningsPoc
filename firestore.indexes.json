@@ -1,0 +1,19 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "taskInfo",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "developerName",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "taskStatus",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

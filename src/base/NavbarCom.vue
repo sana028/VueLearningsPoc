@@ -10,15 +10,9 @@
           <v-spacer></v-spacer>
           <v-menu>
             <template v-slot:activator="{ props }">
-              <v-btn icon="mdi-account" v-bind="props" size="large">
-
-              </v-btn>
+              <RouterLink :to="{name:'developerName'}"><v-btn icon="mdi-account" v-bind="props" size="large"></v-btn></RouterLink>
+          
             </template>
-            <v-list>
-              <v-list-item v-for="(item, index) in items" :key="index" :value="index">
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
           </v-menu>
           <v-icon icon="mdi-logout" @click="handleLogout"></v-icon>
 
@@ -48,6 +42,7 @@ import { ref } from 'vue';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/firebaseConfig.mjs';
 import { useRouter } from 'vue-router';
+
 
 const router = useRouter();
 const drawer = ref(false);

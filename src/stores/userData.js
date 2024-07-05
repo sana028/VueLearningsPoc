@@ -11,6 +11,7 @@ import { DOWNLOAD, DOWNLOADSDOC } from "@/helpers/DB/constant.mjs";
 export const useSearchStore = defineStore("search", () => {
   const downloadTheFile = (fielName) => {
     const starsRef = storageRef(storage, `${fielName}`);
+    console.log(starsRef);
     getDownloadURL(starsRef)
       .then(async (url) => {
         const response = await fetch(url);
@@ -38,6 +39,7 @@ export const useSearchStore = defineStore("search", () => {
             break;
           case "storage/unauthorized":
             // User doesn't have permission to access the object
+            alert("you doesn't have permission to downloaf");
             break;
           case "storage/canceled":
             // User canceled the upload
@@ -73,8 +75,8 @@ export const useSearchStore = defineStore("search", () => {
 
   const deleteTheFile = async (fileName,file) => {
 
-    const desertRef = storageRef(storage, `${fileName}`);
-    deleteObject(desertRef)
+    const deleteRef = storageRef(storage, `${fileName}`);
+    deleteObject(deleteRef)
       .then(() => {
         alert("deleted successfully");
         const docRef = doc(db,DOWNLOAD,DOWNLOADSDOC);

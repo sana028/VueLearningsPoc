@@ -1,5 +1,5 @@
 <template>
-  <v-data-table-server :headers="headers" :items="serverItems" :items-length="totalItems" @update:options="loadItems"
+  <v-data-table-server :headers="headers" :items="serverItems" :items-length="totalItems" 
     :loading="loading" class="custom-data-table">
     <template v-slot:[`item.taskStatus`]="{ value }">
       <v-chip :color="getColor(value)">
@@ -21,16 +21,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, onUnmounted } from 'vue'
 import { defineProps } from 'vue';
 import { RouterView } from 'vue-router';
-import { onSnapshot, doc, where, query,collection } from 'firebase/firestore';
+import { onSnapshot, where, query,collection, orderBy } from 'firebase/firestore';
 import { db } from '@/firebaseConfig.mjs';
 import { TASK_INFO_DB } from '@/helpers/DB/constant.mjs';
 
 
 const dialog = ref(false);
-const props = defineProps(['data','vuedialog']);
+const props = defineProps(['data','vuedialog','developerMode']);
 const totalItems = ref(0);
 
 const headers = [
@@ -44,32 +44,50 @@ const headers = [
 ]
 
 const serverItems = ref([]);
+const unSubscribe = ref();
 
 const fetchTaskData = (task) => {
-  const tasksRef = query(collection(db, TASK_INFO_DB), where("taskName", "==", task));
-  onSnapshot(tasksRef, (snapshot) => {
-    serverItems.value = []; // Clear serverItems before pushing new data
+  const tasksRef = query(collection(db, TASK_INFO_DB), where("taskName", "==", task),orderBy("taskName","asc"),limit(10));
+  unSubscribe.value = onSnapshot(tasksRef, (snapshot) => {
+    serverItems.value = []; 
     snapshot.forEach(doc => {
       serverItems.value.push(doc.data());
-      console.log(doc.data(), 'doc');
+   
     });
   }, (error) => {
     console.error('Error fetching document:', error);
   });
 };
 
+onUnmounted(()=>{
+  if(unSubscribe.value){
+    unSubscribe.value();
+  }
+})
+
 const handleDialog = (isClosed) => {
+  if(!props.developerMode){
   fetchTaskData(props.data.taskName);
+  }
   dialog.value = isClosed;
 };
 
 watch([dialog], () => {
+  if(!props.developerMode){
   fetchTaskData(props.data.taskName);
+  }
+  else{
+    serverItems.value = props.data;
+  }
 });
 
 
 onMounted(() => {
+  if(!props.developerMode){
   fetchTaskData(props.data.taskName);
+  }else{
+    serverItems.value = props.data;
+  }
 });
 
 

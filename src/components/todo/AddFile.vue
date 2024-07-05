@@ -11,7 +11,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-btn color="primary" variant="elevated" @click="uploadTheMediaFile()">Upload</v-btn>
-                <v-btn color="" variant="outlined" @click="handleClose">Cancel</v-btn>
+                <v-btn color=console.log variant="outlined" @click="handleClose">Cancel</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -42,33 +42,33 @@ const handleClose = () => {
     router.go(-1);
 }
 watch([progress], () => {
-    console.log(progress);
+    
 })
 const uploadTheMediaFile = async () => {
     try {
         const file = filePath.value;
         const task = taskFile.value;
         if (!file && !task) {
-            console.log("No file selected");
+         
             return;
         }
-        console.log(file, task, `images/${store.userId}/${file.name}`)
+
         const storageRf = storageRef(storage, `images/${store.userId}/${file.name}`);
         const bytesStorageRef = storageRef(storage, `documents/${store.userId}/${task.name}`);
         const byteFileRef = uploadBytes(bytesStorageRef, task);
         const fileRef = uploadBytesResumable(storageRf, file);
-        updateCompleted.value = (await byteFileRef).metadata.updated ? true : false;
+        updateCompleted.value = (await byteFileRef).metadata.updated ? true : fal+++se;
         fileRef.on('state_changed',
             (snapshot) => {
                 const progressValue = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log(`Upload is ${progressValue}% done`);
+            
                 progress.value = progressValue;
             },
             (error) => {
                 console.error("Upload error:", error); // Enhanced error logging
             },
             async () => {
-                console.log('Uploaded a blob or file!', progress.value, updateCompleted.value);
+
                 const fileURL = await getDownloadURL(storageRf);
 
                 // Store file metadata in Firestore
@@ -78,17 +78,15 @@ const uploadTheMediaFile = async () => {
                     type: file.type,
                     url: fileURL
                 };
-                console.log(fileMetadata)
-                if (progress.value == 100 && updateCompleted.value) {
+             
+                if (progress.value == 100 ) {
                     setTimeout(() => {
-                        if (progress.value === 100) { // Ensure the progress is still 100%
-                            console.log('Uploaded a blob or file!');
                             alert('file uploaded');
                             searchStore.storeFileName(fileMetadata);
                             emit('updateddialog', false);
 
                             router.go(-1);
-                        }
+                        
                     }, 2000);
                 }
             }

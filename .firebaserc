@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "testing": "fir-learnings-5cc16",
+    "default": "fir-learnings-5cc16"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}
